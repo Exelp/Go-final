@@ -1,6 +1,7 @@
 package server
 
 import (
+	"Go-final/pkg/api"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,6 +13,8 @@ func StartServer() error {
 	if port == "" {
 		port = "7540"
 	}
+	api.Init()
+
 	log.Printf("Server start, port:%s\n", port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
