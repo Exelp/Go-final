@@ -22,9 +22,9 @@ func checkDate(task *db.Task) error {
 	now := time.Now()
 	var next string
 	if task.Date == "" {
-		task.Date = now.Format(DATE_Layout)
+		task.Date = now.Format(DateLayout)
 	}
-	t, err := time.Parse(DATE_Layout, task.Date)
+	t, err := time.Parse(DateLayout, task.Date)
 	if err != nil {
 		return fmt.Errorf("date format error: %w", err)
 	}
@@ -36,12 +36,12 @@ func checkDate(task *db.Task) error {
 	}
 	if t.After(now) {
 		if task.Repeat == "" {
-			task.Date = now.Format(DATE_Layout)
+			task.Date = now.Format(DateLayout)
 		} else {
 			task.Date = next
 		}
 	} else {
-		task.Date = now.Format(DATE_Layout)
+		task.Date = now.Format(DateLayout)
 	}
 	return nil
 }

@@ -8,10 +8,13 @@ import (
 	"time"
 )
 
-const DATE_Layout = "20060102"
+const DateLayout = "20060102"
 
 func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 	var now time.Time
+	if r.Method != http.MethodGet {
+		writeJson(w, http.StatusMethodNotAllowed, map[string]string{"error": "only GET method allowed nextDayHandler"})
+	}
 	var err error
 
 	nowStart := r.FormValue("now")
@@ -21,7 +24,7 @@ func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 	if nowStart == "" {
 		now = time.Now()
 	} else {
-		now, err = time.Parse(DATE_Layout, nowStart)
+		now, err = time.Parse(DateLayout, nowStart)
 		if err != nil {
 			http.Error(w, "invalid date format", http.StatusBadRequest)
 			return
@@ -43,7 +46,7 @@ func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func NextDate(now time.Time, dStart string, repeat string) (string, error) {
-	dateStart, err := time.Parse(DATE_Layout, dStart)
+	dateStart, err := time.Parse(DateLayout, dStart)
 	if err != nil {
 		return "", fmt.Errorf("invalid date format: %w", err)
 	}
@@ -65,14 +68,14 @@ func NextDate(now time.Time, dStart string, repeat string) (string, error) {
 		for {
 			dateStart = dateStart.AddDate(0, 0, days)
 			if dateStart.After(now) {
-				return dateStart.Format(DATE_Layout), nil
+				return dateStart.Format(DateLayout), nil
 			}
 		}
 	case "y":
 		for {
 			dateStart = dateStart.AddDate(1, 0, 0)
 			if dateStart.After(now) {
-				return dateStart.Format(DATE_Layout), nil
+				return dateStart.Format(DateLayout), nil
 			}
 		}
 	case "w":
@@ -97,7 +100,7 @@ func NextDate(now time.Time, dStart string, repeat string) (string, error) {
 					wd = 7
 				}
 				if weekDays[wd] {
-					return dateStart.Format(DATE_Layout), nil
+					return dateStart.Format(DateLayout), nil
 				}
 			}
 		}
@@ -163,7 +166,7 @@ func NextDate(now time.Time, dStart string, repeat string) (string, error) {
 				(preLast && day == preLastDay) {
 				if monthYears[int(month)] {
 
-					return dateStart.Format(DATE_Layout), nil
+					return dateStart.Format(DateLayout), nil
 
 				}
 

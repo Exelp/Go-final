@@ -8,13 +8,15 @@ import (
 	"time"
 )
 
+const limit = 50
+
 type TaskResponse struct {
 	Tasks []db.Task `json:"tasks"`
 }
 
 func getTasksHandler(w http.ResponseWriter, r *http.Request) {
 	search := r.URL.Query().Get("search")
-	tasks, err := db.Tasks(search, 50)
+	tasks, err := db.Tasks(search, limit)
 	if err != nil {
 		writeJson(w, http.StatusInternalServerError, map[string]string{"error": "task retrieval error"})
 		return
@@ -61,6 +63,9 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	writeJson(w, http.StatusOK, map[string]string{})
 }
 func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeJson(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed doneTaskHandler"})
+	}
 	id := r.URL.Query().Get("id")
 	if id == "" {
 		log.Printf("invalid ID")

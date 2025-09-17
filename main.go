@@ -16,6 +16,7 @@ func main() {
 	if err := db.Init(dbFile); err != nil {
 		log.Fatalf("failed start database: %v", err)
 	}
+	defer db.Close()
 	webDir := "./web"
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	err := server.StartServer()

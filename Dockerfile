@@ -12,6 +12,7 @@ WORKDIR /app
 
 COPY --from=builder /app/go-final .
 COPY --from=builder /app/web ./web
+ENV TODO_PORT=7540
 EXPOSE 7540
 
 CMD ["./go-final"]
